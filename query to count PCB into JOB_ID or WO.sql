@@ -43,4 +43,4 @@ SELECT MAX(PATTERN_NUMBER)/*COUNT(PATTERN_NUMBER)*/ /*TOP 1000 [NC_PLACEMENT_ID]
       ,[NC_VERSION]
       ,[PATTERN_IDNUM]
       ,[PU_DISPLAY]*/
-  FROM [PanaCIM].[dbo].[nc_placement_detail]where NC_VERSION = '298113' /*AND PATTERN_NUMBER = '1'*/
+  FROM [PanaCIM].[dbo].[nc_placement_detail] where NC_VERSION = '298113' /*AND PATTERN_NUMBER = '1'*/
