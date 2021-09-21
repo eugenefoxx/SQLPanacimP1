@@ -33,7 +33,7 @@ SELECT COUNT(DISTINCT PANEL_ID) /*TOP 1000 [PANEL_ID]
   FROM [PanaCIM].[dbo].[panels] where JOB_ID = '5131'
   Результат - 750 
   
-  // Узнать кол-во плат в заготовке 
+  /* Узнать кол-во плат в заготовке */
   /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT MAX(PATTERN_NUMBER)/*COUNT(PATTERN_NUMBER)*/ /*TOP 1000 [NC_PLACEMENT_ID]
       ,[IDNUM]
