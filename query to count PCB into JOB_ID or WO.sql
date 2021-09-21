@@ -53,3 +53,30 @@ SELECT MAX(PATTERN_NUMBER)/*COUNT(PATTERN_NUMBER)*/ /*TOP 1000 [NC_PLACEMENT_ID]
       ,[PATTERN_IDNUM]
       ,[PU_DISPLAY]*/
   FROM [PanaCIM].[dbo].[nc_placement_detail] where NC_VERSION = '298113' /*AND PATTERN_NUMBER = '1'*/
+  
+  /* Просмотр закрытия по времени ворк-ордеров, если CLOSING_TYPE 0 то закрыт, если NULL - то в производстве    */
+  /****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [JOB_ID]
+      ,[EQUIPMENT_ID]
+      ,[SETUP_ID]
+      ,[START_TIME]
+      ,[END_TIME]
+      ,[CLOSING_TYPE]
+      ,[START_OPERATOR_ID]
+      ,[END_OPERATOR_ID]
+      ,[TFR_REASON]
+      ,[LANE_NO]
+  FROM [PanaCIM].[dbo].[job_history] order by END_TIME desc
+  
+  /****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1 [JOB_ID]
+      ,[EQUIPMENT_ID]
+      ,[SETUP_ID]
+      ,[START_TIME]
+      ,[END_TIME]
+      ,[CLOSING_TYPE]
+      ,[START_OPERATOR_ID]
+      ,[END_OPERATOR_ID]
+      ,[TFR_REASON]
+      ,[LANE_NO]
+  FROM [PanaCIM].[dbo].[job_history] where CLOSING_TYPE = '0' order by END_TIME desc
