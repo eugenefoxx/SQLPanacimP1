@@ -1,3 +1,12 @@
+/* Поиск колонки в базе */
+SELECT      c.name  AS 'ColumnName'
+            ,t.name AS 'TableName'
+FROM        sys.columns c
+JOIN        sys.tables  t   ON c.object_id = t.object_id
+WHERE       c.name LIKE '%idnum%' /*'%pattern%'   */
+ORDER BY    TableName
+            ,ColumnName;
+
 /* По ворк-ордеру определяем job_id */
 /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT TOP 1000 [WORK_ORDER_ID]
