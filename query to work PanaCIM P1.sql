@@ -117,5 +117,5 @@ SELECT TOP 10000 SUM(PLACE_COUNT) AS SUM/*, [REPORT_ID]
   /* Вариант 2-b - ЕО и кол-во */
   /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT TOP 10000 [REEL_ID],SUM(PLACE_COUNT) AS SUM
-  FROM [PanaCIM].[dbo].[Z_CASS_VIEW]where JOB_ID = '5109' group by REEL_ID
+  FROM [PanaCIM].[dbo].[Z_CASS_VIEW] where JOB_ID = '5109' group by REEL_ID
 
