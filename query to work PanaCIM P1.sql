@@ -45,7 +45,7 @@ FROM [PanaCIM].[dbo].[panels] where JOB_ID = '5134' /*order by NC_VERSION desc*/
 /* получить список NC_VERSION */
 /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT DISTINCT NC_VERSION
-  FROM [PanaCIM].[dbo].[panels]where JOB_ID = '5134'
+  FROM [PanaCIM].[dbo].[panels] where JOB_ID = '5134'
   
 /*  Получаем список REPORT_ID  */
   /****** Script for SelectTopNRows command from SSMS  ******/
