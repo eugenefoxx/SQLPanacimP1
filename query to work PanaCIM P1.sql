@@ -50,7 +50,7 @@ SELECT DISTINCT NC_VERSION
 /*  Получаем список REPORT_ID  */
   /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT TOP 1000 [REPORT_ID]
-  FROM [PanaCIM].[dbo].[PRODUCTION_REPORTS_NM_NPM_KX_VIEW]where NC_VERSION = '297832' and JOB_ID = '5134' AND PLACE_COUNT != '0'
+  FROM [PanaCIM].[dbo].[PRODUCTION_REPORTS_NM_NPM_KX_VIEW] where NC_VERSION = '297832' and JOB_ID = '5134' AND PLACE_COUNT != '0'
   
 /*  Информация по потреблению компонентов по REPORT_ID  */
   /****** Script for SelectTopNRows command from SSMS  ******/
