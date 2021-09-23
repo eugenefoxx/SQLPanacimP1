@@ -122,4 +122,15 @@ SELECT TOP 10000 [REEL_ID],SUM(PLACE_COUNT) AS SUM
 /*  Вариант 2-d - ЕО и кол-во  */
 /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT TOP 10000 [PanaCIM].[dbo].[Z_CASS_VIEW].[REEL_ID],SUM([PanaCIM].[dbo].[Z_CASS_VIEW].PLACE_COUNT) AS SUM, [PanaCIM].[dbo].[REEL_DATA_VIEW].reel_barcode
-  FROM [PanaCIM].[dbo].[Z_CASS_VIEW]LEFT JOIN [PanaCIM].[dbo].[REEL_DATA_VIEW] ON [PanaCIM].[dbo].[REEL_DATA_VIEW].[reel_id] = [PanaCIM].[dbo].[Z_CASS_VIEW].[REEL_ID] where [PanaCIM].[dbo].[Z_CASS_VIEW].JOB_ID = '5109' group by [PanaCIM].[dbo].[REEL_DATA_VIEW].reel_barcode, [PanaCIM].[dbo].[Z_CASS_VIEW].REEL_ID
+  FROM [PanaCIM].[dbo].[Z_CASS_VIEW]LEFT JOIN [PanaCIM].[dbo].[REEL_DATA_VIEW] 
+  ON [PanaCIM].[dbo].[REEL_DATA_VIEW].[reel_id] = [PanaCIM].[dbo].[Z_CASS_VIEW].[REEL_ID] 
+  where [PanaCIM].[dbo].[Z_CASS_VIEW].JOB_ID = '5109' 
+  group by [PanaCIM].[dbo].[REEL_DATA_VIEW].reel_barcode, [PanaCIM].[dbo].[Z_CASS_VIEW].REEL_ID
+
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 10000 [PanaCIM].[dbo].[Z_CASS_VIEW].[REEL_ID],SUM([PanaCIM].[dbo].[Z_CASS_VIEW].PLACE_COUNT) AS SUM, [PanaCIM].[dbo].[REEL_DATA_VIEW].reel_barcode
+  FROM [PanaCIM].[dbo].[Z_CASS_VIEW]LEFT JOIN [PanaCIM].[dbo].[REEL_DATA_VIEW]
+  ON [PanaCIM].[dbo].[REEL_DATA_VIEW].[reel_id] = [PanaCIM].[dbo].[Z_CASS_VIEW].[REEL_ID]
+  where [PanaCIM].[dbo].[Z_CASS_VIEW].JOB_ID = '5109' 
+  group by [PanaCIM].[dbo].[REEL_DATA_VIEW].reel_barcode, [PanaCIM].[dbo].[Z_CASS_VIEW].REEL_ID
+  order by [PanaCIM].dbo.REEL_DATA_VIEW.reel_barcode desc
