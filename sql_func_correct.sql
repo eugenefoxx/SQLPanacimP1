@@ -82,6 +82,7 @@ CREATE VIEW dbo.InfoInstallLastJobId_View
 AS
       SELECT TOP 10000
             [PanaCIM].[dbo].[Z_CASS_VIEW].[REEL_ID],
+            [PanaCIM].[dbo].[reel_data].PART_NO,
             SUM([PanaCIM].[dbo].[Z_CASS_VIEW].PLACE_COUNT) AS PLACE_COUNT,
             SUM([PanaCIM].[dbo].[Z_CASS_VIEW].PICKUP_COUNT) AS PICKUP_COUNT,
             [PanaCIM].[dbo].[REEL_DATA_VIEW].reel_barcode,
@@ -148,6 +149,7 @@ GO
 
 SELECT TOP 1000
       [REEL_ID]
+        ,[PART_NO]
       , [PLACE_COUNT]
       , [PICKUP_COUNT]
       , [reel_barcode]
