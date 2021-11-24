@@ -47,7 +47,7 @@ FROM [PanaCIM].[dbo].[panels] where JOB_ID = '5134' /*order by NC_VERSION desc*/
 SELECT DISTINCT NC_VERSION
   FROM [PanaCIM].[dbo].[panels] where JOB_ID = '5134'
   
-/*  Получаем список REPORT_ID  */
+-- Получаем список REPORT_ID
   /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT TOP 1000 [REPORT_ID]
   FROM [PanaCIM].[dbo].[PRODUCTION_REPORTS_NM_NPM_KX_VIEW]
