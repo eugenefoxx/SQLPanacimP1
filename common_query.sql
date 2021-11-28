@@ -14,3 +14,8 @@ SELECT TOP 100000 [WORK_ORDER_ID]
       ,[COMMENTS]
 FROM [PanaCIM].[dbo].[work_orders]
 order by [JOB_ID]
+
+SELECT [PCB_NAME]
+FROM [PanaCIM].[dbo].[product_setup]
+WHERE PRODUCT_ID = '3410'
+group by [PCB_NAME]
