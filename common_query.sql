@@ -15,6 +15,7 @@ SELECT TOP 100000 [WORK_ORDER_ID]
 FROM [PanaCIM].[dbo].[work_orders]
 order by [JOB_ID]
 
+-- get PCB_NAME
 SELECT [PCB_NAME]
 FROM [PanaCIM].[dbo].[product_setup]
 WHERE PRODUCT_ID = '3410'
