@@ -1,69 +1,100 @@
 package main
 
 import (
-	"bufio"
-	"encoding/csv"
 	"fmt"
-	"io"
-	"log"
 	"os"
 	"strconv"
 
+	"github.com/eugenefoxx/SQLPanacimP1/pkg/filereader"
+	"github.com/eugenefoxx/SQLPanacimP1/pkg/logging"
+	"github.com/eugenefoxx/SQLPanacimP1/pkg/removefiles"
 	"github.com/joho/godotenv"
 )
 
 const (
 	//value uint16 = 3000
-	value int = 4708
+	value int = 19940
 )
 
-func main() {
+var (
+	logger = logging.GetLogger()
+	//logger logging.Logger
+)
+
+func init() {
+	logging.Init()
+	logger := logging.GetLogger()
+
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err.Error)
 	}
+}
+
+// NPM_910-00473_A_
+func main() {
+	//	logging.Init()
+	logger := logging.GetLogger()
+	//	logger.Println("logger initialized")
+	/*
+		sortworkorders.Getclosedworkorders()
+
+		res, err := sortworkorders.GetLastJobIdValue1()
+		if err != nil {
+			logger.Errorf(err.Error())
+		}
+		if res != "" {
+			logger.Infof(("res - %v"), res)
+		}
+		res2, err := sortworkorders.GetLastJobIdValue2()
+		if err != nil {
+			logger.Errorf(err.Error())
+		}
+		if res2 != "" {
+			logger.Infof(("res2 - %v"), res2)
+		}
+		res3, err := sortworkorders.GetLastJobIdValue3()
+		if err != nil {
+			logger.Errorf(err.Error())
+		}
+		if res3 != "" {
+			logger.Infof(("res3 - %v"), res3)
+		}
+	*/
 	recipe := os.Getenv("recipe")
+	reportCsv := os.Getenv("report")
+	substituteCsv := os.Getenv("substitute")
+	panacimCsv := os.Getenv("panacim")
+	reportSUMCsv := os.Getenv("reportSUM")
 
 	//npm := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/NPM_910-00473_A_recipte.csv")
-	npm := readfileseeker(recipe)
-	report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/report.csv")
+	npm := filereader.Readfileseeker(recipe)
+	report, err := os.Create(reportCsv)
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
+		return
 	}
 	defer report.Close()
 
-	split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/report.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	split, err := os.OpenFile(reportCsv, os.O_APPEND|os.O_WRONLY, 0644)
 
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
 		return
 	}
 	defer split.Close()
-	//parts := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/parts.csv")
-	//var nmpparts = []string{}
-	//var arr = [...]string{}
-	//var arrofarr = [...]string{}
+
 	for _, iter := range npm {
-		//	for _, part := range par ts {
-		//	fmt.Println(part[0])
+
 		qtytotal, err := strconv.Atoi(iter[1])
 		if err != nil {
-			log.Println(err)
+			logger.Errorf(err.Error())
+			return
 		}
-		//	if iter[0] == part[0] {
-
-		//	if iter[1] != "" {
-		//	fmt.Println(iter[0], iter[1], uint16(qty)*value)
-		qtytotal, err = strconv.Atoi(iter[1])
-		if err != nil {
-			log.Println(err)
-		}
-		//var arr = [3]string{iter[0], iter[1], int(uint16(qtytotal) * value)}
-		//	fmt.Println(arr[2])
 
 		//var result = []string{iter[0] + "," + iter[1] + "," + strconv.Itoa(int(uint16(qtytotal)*value))}
 		var result = []string{iter[0] + "," + iter[1] + "," + strconv.Itoa(int(qtytotal)*value)}
-		fmt.Println(result)
+		//fmt.Println(result)
 		for _, v := range result {
 			_, err = fmt.Fprintln(split, v)
 			if err != nil {
@@ -71,72 +102,19 @@ func main() {
 				return
 			}
 		}
-		//	for i := range arrofarr {
-		//		arrofarr[i] = arr
-		//	}
-		//	}
-		//	}
-		//fmt.Println(arrofarr, "\n")
 
-		/*	var arrayofslice [len(arrofarr)][]int
-			for i := range arrofarr { // assign
-				arrayofslice[i] = arrofarr[i][:]
-			}
-			//	fmt.Println(arrayofslice[0][2], "\n")
-			var sliceofslices [][]int
-			sliceofslices = arrayofslice[:]
-			//sliceofslices[:][:] = [][]int{0, 0}
-			fmt.Println(sliceofslices[4][2], "\n")*/
-		/*
-			parts := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/parts.csv")
-			for _, part := range parts {
-				intSAP, err := strconv.Atoi(part[0])
-				if err != nil {
-					log.Println(err)
-				}
-				intPartSAP1, err := strconv.Atoi(part[1])
-				if err != nil {
-					log.Println(err)
-				}
-				intPartSAP2, err := strconv.Atoi(part[1])
-				if err != nil {
-					log.Println(err)
-				}
-				intPartSAP3, err := strconv.Atoi(part[1])
-				if err != nil {
-					log.Println(err)
-				}
-				//rrr = sliceofslices[0][2]
-				if sliceofslices[0][0] == intSAP {
-					sliceofslices = append(sliceofslices, part[1], intPartSAP2)
-					//	var arr201 = [3]string{part[1], " ", " "}
-					//	var arr202 = [3]string{part[1], " ", " "}
-					//	var arr203 = [3]string{part[1], " ", " "}
-					//arrofarr2
-					for ii := range arrofarr {
-
-						arrofarr[ii] = append() //arr201
-						arrofarr[ii] = arr202
-						arrofarr[ii] = arr203
-					}
-				}
-			}
-			fmt.Println(arrofarr)*/
-		//	parts := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/parts.csv")
-		//	for _, part := range parts {
-		//		if arrofarr[0][1]
-		//	}
-		//nmpparts = append(nmpparts, iter...)
-		//	}
 	}
 	//fmt.Println(nmpparts[0], nmpparts[1])
-	reportDGS := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/report.csv")
-	reportParts := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/parts.csv")
-	panacimdata := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/panacim.csv")
+	reportDGS := filereader.Readfile(reportCsv)
+	//reportParts := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/parts.csv")
+	reportParts := filereader.Readfileseeker(substituteCsv)
+	//panacimdata := readfileseeker("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/panacim.csv")
+	panacimdata := filereader.Readfileseeker(panacimCsv)
 
 	for p := 0; p < len(reportDGS); p++ {
 		parseParts(reportParts, reportDGS, panacimdata, reportDGS[p][0])
 	}
+	// формируем файлы
 	for p := 0; p < len(reportDGS); p++ {
 		insertPanacimDataQty(panacimdata, reportDGS[p][0])
 	}
@@ -144,15 +122,22 @@ func main() {
 	for p := 0; p < len(reportDGS); p++ {
 		insertPanacimDataQtyTotal(reportDGS[p][0])
 	}
-	reportSum, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
+	//reportSum, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
+	reportSum, err := os.Create(reportSUMCsv)
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
+		logger.Errorf(err.Error())
 	}
 	defer reportSum.Close()
-	reportSumRead := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
+	//reportSumRead := filereader.Readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
+	reportSumRead := filereader.Readfile(reportSUMCsv)
 	for r := 0; r < len(reportDGS); r++ {
 		sumComponent(reportDGS, reportSumRead, reportDGS[r][0])
 	}
+
+	reportSummary := filereader.Readfile(reportSUMCsv)
+
+	summaryReportComponents(reportSummary)
 
 	//var i int
 	/*
@@ -164,137 +149,92 @@ func main() {
 
 		map[int]string использовать. В качестве ключа - индекс в строке
 	*/
+	directorypath := os.Getenv("operationdata")
+	directory := directorypath
+	removefiles.RemoveFiles(directory)
 
-	reportSumRead2 := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
-	//  строка 4, колонка 3
-	fmt.Println(reportSumRead2[3][2])
-	/* output each array element's value */
-	//sum := 0
+	/*
+		app := "/home/eugenearch/Code/github.com/eugenefoxx/test/readIni/readIni"
+		args := []string{"-L1", "NPM_brain-1_p"}
+		cmd := exec.Command(app, args...)
+		_, err = cmd.Output()
 
-	//result := []string{}
-	for i := 0; i < len(reportSumRead2); i++ {
-		//for i, v := range reportSumRead2 {
-		//	for j := 0; j < len(reportSumRead2); j++ {
-		//	if reportSumRead2[i][0] == reportSumRead2[j][0] {
-		//fmt.Printf("a[%d][%d] = %d\n", i, j, a[i][j])
-		//	fmt.Printf("a[%v] [%v] = %v\n", i, j, reportSumRead[i][j])
+		if err != nil {
+			println(err.Error())
+			return
+		} */
 
-		fmt.Println("read", reportSumRead2[i])
+}
 
-		//	f, err := strconv.Atoi(reportSumRead2[i][2])
-		//	if err != nil {
-		//		log.Println(err)
-		//	}
-		//	sum += (f)
+func summaryReportComponents(reportSumRead [][]string) {
+	logger := logging.GetLogger()
+	reportSummaryCsv := os.Getenv("reportSummary")
 
-		//	}
-		//	}
+	reportSummary, err := os.Create(reportSummaryCsv)
+	if err != nil {
+		logger.Errorf(err.Error())
+		return
 	}
-	//fmt.Println("Total", sum)
-	testFile := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
+	defer reportSummary.Close()
 
-	for i := 0; i < len(testFile); i++ {
-		total1, err := strconv.Atoi(testFile[i][2])
-		if err != nil {
-			log.Println(err)
-		}
-		total2, err := strconv.Atoi(testFile[i][3])
-		if err != nil {
-			log.Println(err)
-		}
-		if total2-total1 != 0 {
-			fmt.Printf("read delta Testfile %s %d\n", testFile[i][0], total2-total1)
-		}
-
+	split, err := os.OpenFile(reportSummaryCsv, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		logger.Errorf(err.Error())
+		return
 	}
+	defer split.Close()
 
-	//reportSumRead2 := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
-	//fmt.Println("ddd", reportSumRead2)
-	/*	for g := 0; g < len(reportSumRead2); g++ {
-			for f := 0; f < len(reportSumRead2); f++ {
-				if reportSumRead2[g][0] == reportSumRead2[f][0] {
-					//fmt.Println("reportSumRead[yy][0]", reportSumRead[g][0])
-					fmt.Println("Test duble")
-					fmt.Println(reportSumRead2[g][1])
-				}
-			}
-		}
-	*/
-	/*
-		for i := 0; i < len(reportParts); i++ {
-			for ii := 0; ii < len(reportDGS); ii++ {
-				if reportParts[i][0] == "1013770" {
-					fmt.Println("1013770", reportParts[i][1])
-					break
-				}
-			}
-		}
-	*/
-	/*
-		reportCommon, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/common.csv")
+	for i := 0; i < len(reportSumRead); i++ {
+		total1, err := strconv.Atoi(reportSumRead[i][2])
 		if err != nil {
-			log.Println(err)
-		}
-		defer reportCommon.Close()*/
-	/*writer := csv.NewWriter(reportCommon)
-	writer.Write([]string{"0", "0", "0", "0", "0", "0", "0", "0", "0", "0"})
-	writer.Comma = ','
-	writer.Flush()*/
-	/*
-		splitCommon, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/common.csv", os.O_APPEND|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Println(err)
+			logger.Errorf(err.Error())
 			return
 		}
-		defer splitCommon.Close()
-		// strings.Split(raw,",")
-		for _, dgs := range reportDGS {
-			ttt := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + dgs[0] + ".csv")
+		total2, err := strconv.Atoi(reportSumRead[i][3])
+		if err != nil {
+			logger.Errorf(err.Error())
+			return
+		}
+		if total2-total1 != 0 {
 
-			//rr := fmt.Sprint(fmt.Printf("Read %s, %s, %s, %v \n", dgs[0], dgs[1], dgs[2], ttt))
-			rr := fmt.Sprint(dgs[0]+","+dgs[1]+","+dgs[2]+",", ttt)
-			//fmt.Println("rr", rr)
-			str1 := strings.Replace(rr, "[", "", -1)
-			str2 := strings.Replace(str1, "]", ",", -1)
-			str3 := strings.Replace(str2, ",,", "", -1)
-			str4 := strings.ReplaceAll(str3, " ", "")
-			//str5 := strings.ReplaceAll(str4, " ", ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
-			var result = []string{str4}
-			//fmt.Println(result)
+			//	fmt.Printf("read Отклонение от DGS delta reportSummaryComponent %s %d\n", reportSumRead[i][0], total2-total1)
+			var result = []string{reportSumRead[i][0] + "," + strconv.Itoa(total2-total1)}
 			for _, v := range result {
-				_, err = fmt.Fprintln(splitCommon, v)
+				_, err = fmt.Fprintln(split, v)
 				if err != nil {
 					split.Close()
 					return
 				}
 			}
-			//for _, t := range ttt {
-			//	fmt.Println("T", dgs[0], t[0])
-			//}
 		}
-	*/
+	}
+
 }
 
-func parseParts(reportParts, reportDGS, panacimdata [][]string, pars string) {
-
-	report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + ".csv")
+func parseParts(reportParts, reportDGS, panacimdata [][]string, parts string) {
+	logger := logging.GetLogger()
+	subtitutepath := os.Getenv("parts")
+	//report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + parts + ".csv")
+	report, err := os.Create(subtitutepath + parts + ".csv")
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
+		return
 	}
 	defer report.Close()
 
-	split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/"+pars+".csv", os.O_APPEND|os.O_WRONLY, 0644)
+	//split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/"+parts+".csv", os.O_APPEND|os.O_WRONLY, 0644)
+	split, err := os.OpenFile(subtitutepath+parts+".csv", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
 		return
 	}
 	defer split.Close()
-
+	// просматриваем наличие оригинала по dgs из установленных компонентов по panacim
 	for p := 0; p < len(panacimdata); p++ {
-		if panacimdata[p][0] == pars {
+		if panacimdata[p][0] == parts {
 			//var resultp = []string{pars + "," + panacimdata[p][1]}
-			var resultp = []string{pars}
-			fmt.Println(resultp)
+			var resultp = []string{parts}
+			//fmt.Println(resultp)
 			for _, v := range resultp {
 				_, err = fmt.Fprintln(split, v)
 				if err != nil {
@@ -302,19 +242,17 @@ func parseParts(reportParts, reportDGS, panacimdata [][]string, pars string) {
 					return
 				}
 			}
-
 		}
-
 	}
-
+	//  просматриваем замены по оригиналу
 	//	for p := 0; p < len(panacimdata); p++ {
 	for i := 0; i < len(reportParts); i++ {
 		for ii := 0; ii < len(reportDGS); ii++ {
-			if reportParts[i][0] == pars {
+			if reportParts[i][0] == parts {
 				//if panacimdata[p][0] == reportParts[i][0] {
 				//	var result = []string{reportParts[i][1] + "," + panacimdata[p][1]}
 				var result = []string{reportParts[i][1]}
-				fmt.Println(result)
+				//fmt.Println(result)
 				for _, v := range result {
 					_, err = fmt.Fprintln(split, v)
 					if err != nil {
@@ -322,45 +260,42 @@ func parseParts(reportParts, reportDGS, panacimdata [][]string, pars string) {
 						return
 					}
 				}
-
-				//}
 				break
-				//			}
-
 			}
 		}
 	}
-
-	/*	for s := 0; s < len(pp); s++ {
-		fmt.Println("Test", pp[s][0])
-	}*/
-
 }
 
-func insertPanacimDataQty(panacimdata [][]string, pars string) {
+// подставляем кол-во установленного компонента по отчету panacim
+func insertPanacimDataQty(panacimdata [][]string, parts string) {
+	logger := logging.GetLogger()
+	subtitutepath := os.Getenv("parts")
 
-	pp := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + ".csv")
-
-	report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + "pana.csv")
+	//pp := filereader.Readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + ".csv")
+	component := filereader.Readfile(subtitutepath + parts + ".csv")
+	//report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + parts + "pana.csv")
+	report, err := os.Create(subtitutepath + parts + "pana.csv")
 	if err != nil {
-		log.Println(err)
-	}
-	defer report.Close()
-	split2, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/"+pars+"pana.csv", os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
 		return
 	}
-	defer split2.Close()
-	for ppp := 0; ppp < len(panacimdata); ppp++ {
-		for s := 0; s < len(pp); s++ {
-			if panacimdata[ppp][0] == pp[s][0] {
-				var resultp = []string{pp[s][0] + "," + panacimdata[ppp][1]}
-				fmt.Println(resultp)
-				for _, v := range resultp {
-					_, err = fmt.Fprintln(split2, v)
+	defer report.Close()
+	//split2, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/"+parts+"pana.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	split, err := os.OpenFile(subtitutepath+parts+"pana.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		logger.Errorf(err.Error())
+		return
+	}
+	defer split.Close()
+	for p := 0; p < len(panacimdata); p++ {
+		for s := 0; s < len(component); s++ {
+			if panacimdata[p][0] == component[s][0] {
+				var result = []string{component[s][0] + "," + panacimdata[p][1]}
+				//	fmt.Println(result)
+				for _, v := range result {
+					_, err = fmt.Fprintln(split, v)
 					if err != nil {
-						split2.Close()
+						split.Close()
 						return
 					}
 				}
@@ -369,17 +304,25 @@ func insertPanacimDataQty(panacimdata [][]string, pars string) {
 	}
 }
 
+// суммируем все кол-ва установленного компонента по ключу оригинала в файле собранных данных с кол-вом установленных компонентов
+// по оригиналу и ключу
 func insertPanacimDataQtyTotal(pars string) {
-	readFile := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + "pana.csv")
+	logger := logging.GetLogger()
+	subtitutepath := os.Getenv("parts")
+	//readFile := filereader.Readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + "pana.csv")
+	readFile := filereader.Readfile(subtitutepath + pars + "pana.csv")
 
-	report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + "panatotal.csv")
+	//report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + pars + "panatotal.csv")
+	report, err := os.Create(subtitutepath + pars + "panatotal.csv")
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
+		return
 	}
 	defer report.Close()
-	split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/"+pars+"panatotal.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	//split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/"+pars+"panatotal.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	split, err := os.OpenFile(subtitutepath+pars+"panatotal.csv", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
 		return
 	}
 	defer split.Close()
@@ -387,7 +330,8 @@ func insertPanacimDataQtyTotal(pars string) {
 	for i := 0; i < len(readFile); i++ {
 		convertsumCol, err := strconv.Atoi(readFile[i][1])
 		if err != nil {
-			log.Println(err)
+			logger.Errorf(err.Error())
+			return
 		}
 		sumCol += (convertsumCol)
 	}
@@ -404,59 +348,42 @@ func insertPanacimDataQtyTotal(pars string) {
 }
 
 func sumComponent(reportDGS, reportSumRead [][]string, component string) {
+	logger := logging.GetLogger()
+	subtitutepath := os.Getenv("parts")
+	reportSUMCsv := os.Getenv("reportSUM")
 	/*	report, err := os.Create("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv")
 		if err != nil {
 			log.Println(err)
 		}
 		defer report.Close()*/
 
-	split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	//split, err := os.OpenFile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/reportSumComponent.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	split, err := os.OpenFile(reportSUMCsv, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println(err)
+		logger.Errorf(err.Error())
 		return
 	}
 	defer split.Close()
 
-	parts := readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + component + "panatotal.csv")
-	fmt.Printf("readfile TEST %s %v\n", component, parts)
+	//parts := filereader.Readfile("/home/eugenearch/Code/github.com/eugenefoxx/SQLPanacimP1/csvfolder/" + component + "panatotal.csv")
+	parts := filereader.Readfile(subtitutepath + component + "panatotal.csv")
+	//fmt.Printf("readfile TEST %s %v\n", component, parts)
 
 	for rp := 0; rp < len(reportDGS); rp++ {
 		for p := 0; p < len(parts); p++ {
-			//	for dub := 0; dub < len(reportSumRead); dub++ {
-			//fmt.Println("testing")
-			/*	if reportSumRead[dub][0] == component {
-				sumc, err := strconv.Atoi(parts[p][1])
-				if err != nil {
-					log.Println(err)
-				}
-				sum2, err := strconv.Atoi(reportSumRead[dub][3])
-				if err != nil {
-					log.Println(err)
-				}
-				sum3 := sumc + sum2
-				var result = []string{reportDGS[rp][0] + "," + reportDGS[rp][1] + "," + reportDGS[rp][2] + "," + strconv.Itoa(sum3)}
-				for _, v := range result {
-					_, err = fmt.Fprintln(split, v)
-					if err != nil {
-						split.Close()
-						return
-					}
-				}
-			}*/
+
 			sumc, err := strconv.Atoi(parts[p][1])
 			if err != nil {
-				log.Println(err)
+				logger.Errorf(err.Error())
+				return
 			}
 			if reportDGS[rp][0] == component {
-				fmt.Printf("reportDGS Test %v\n", reportDGS[rp][0])
-				//sumc := 0
+				//fmt.Printf("reportDGS Test %v\n", reportDGS[rp][0])
 
-				// суммирую колонку с кол-вом установленных компонентов
-				//sum += (sumc)
-				fmt.Printf("reportDGS Test Sum %v %v\n", reportDGS[rp][0], sumc)
+				//fmt.Printf("reportDGS Test Sum %v %v\n", reportDGS[rp][0], sumc)
 				var result = []string{reportDGS[rp][0] + "," + reportDGS[rp][1] + "," + reportDGS[rp][2] + "," + strconv.Itoa(sumc)}
 				//var result = []string{reportDGS[rp][0] + "," + reportDGS[rp][1] + "," + reportDGS[rp][2] + "," + strconv.Itoa(sum)}
-				fmt.Println("result TEST", result)
+				//	fmt.Println("result TEST", result)
 				for _, v := range result {
 					_, err = fmt.Fprintln(split, v)
 					if err != nil {
@@ -465,18 +392,17 @@ func sumComponent(reportDGS, reportSumRead [][]string, component string) {
 					}
 				}
 			}
-			//	}
 		}
 	}
 	if parts == nil {
 		fmt.Println("nil", component)
 		for rp := 0; rp < len(reportDGS); rp++ {
 			if reportDGS[rp][0] == component {
-				fmt.Printf("reportDGS Test %v\n", reportDGS[rp][0])
+				//	fmt.Printf("reportDGS Test %v\n", reportDGS[rp][0])
 
-				fmt.Printf("reportDGS Test Sum %v %v\n", reportDGS[rp][0], "0")
+				//	fmt.Printf("reportDGS Test Sum %v %v\n", reportDGS[rp][0], "0")
 				var result = []string{reportDGS[rp][0] + "," + reportDGS[rp][1] + "," + reportDGS[rp][2] + "," + "0"}
-				fmt.Println("result TEST", result)
+				//fmt.Println("result TEST", result)
 				for _, v := range result {
 					_, err = fmt.Fprintln(split, v)
 					if err != nil {
@@ -489,87 +415,3 @@ func sumComponent(reportDGS, reportSumRead [][]string, component string) {
 		}
 	}
 }
-
-func readfileseeker(name string) [][]string {
-	f, err := os.Open(name)
-	if err != nil {
-		fmt.Println(err)
-
-	}
-	defer f.Close()
-
-	cr, err := readseeker(f)
-	if err != nil {
-		log.Fatalf("error read %s", err)
-	}
-
-	return cr
-}
-
-func readseeker(rs io.ReadSeeker) ([][]string, error) {
-	row1, err := bufio.NewReader(rs).ReadSlice('\n')
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = rs.Seek(int64(len(row1)), io.SeekStart)
-	if err != nil {
-		return nil, err
-	}
-
-	lines := csv.NewReader(rs) //.ReadAll()
-	//lines.Comma = '|'
-	lines.Comma = ','
-	lines.LazyQuotes = true
-
-	CSVdata, err := lines.ReadAll()
-	if err != nil {
-		//	fmt.Println(err)
-		//	os.Exit(1)
-		log.Fatal(err)
-	}
-
-	return CSVdata, nil
-}
-
-func readfile(name string) [][]string {
-	f, err := os.Open(name)
-	if err != nil {
-		fmt.Println(err)
-
-	}
-	defer f.Close()
-
-	cr := csv.NewReader(f)
-
-	cr.LazyQuotes = true
-	cr.Comma = ','
-	//	cr.FieldsPerRecord = 10
-
-	CSVdata, err := cr.ReadAll()
-	if err != nil {
-		log.Fatalf("readfile %s", err)
-	}
-	return CSVdata
-}
-
-/*
-func ragnearr1(args [][]string) [1][3]string {
-	var arr = [3]string{}
-	var arrofarr = [1][3]string{}
-	for _, iter := range args {
-		qty, err := strconv.Atoi(iter[1])
-		if err != nil {
-			log.Println(err)
-		}
-		arr = [3]string{iter[0], iter[1], strconv.Itoa(int(uint16(qty) * value))}
-
-		//fmt.Println(arrofarr)
-		//return arrofarr
-	}
-	for i := range arrofarr {
-		arrofarr[i] = arr
-	}
-	return arrofarr
-}
-*/
