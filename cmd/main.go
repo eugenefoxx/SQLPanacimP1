@@ -88,7 +88,7 @@ func main() {
 		logger.Errorf(err.Error())
 	}
 	fmt.Println("do ", doLastListWO)
-
+	fmt.Print("test")
 	// записываем результат doLastListWO в файл closedwo.csv
 	if err := panacimStorage.WriteListWOToFile(doLastListWO); err != nil {
 		logger.Errorf(err.Error())
