@@ -3,7 +3,6 @@ package sortworkorders
 import (
 	"bufio"
 	"context"
-	"database/sql"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
@@ -13,14 +12,7 @@ import (
 	"sort"
 
 	"github.com/eugenefoxx/SQLPanacimP1/pkg/filereader"
-	"github.com/eugenefoxx/SQLPanacimP1/pkg/logging"
 )
-
-type SortWO struct {
-	DB *sql.DB
-	//store *Store
-	//	db *gg
-}
 
 //var db *sql.DB
 
@@ -347,7 +339,7 @@ func (r OperationStorage) GetLastJobIdValue1() (string, error) {
 }
 
 func (r OperationStorage) GetLastJobIdValue2() (string, error) {
-	
+
 	lastWOpath := os.Getenv("lastJobId")
 	processedWOpath := os.Getenv("processedWO")
 
@@ -485,7 +477,7 @@ func (r OperationStorage) GetLastJobIdValue2() (string, error) {
 }
 
 func (r OperationStorage) GetLastJobIdValue3() (string, error) {
-	
+
 	lastWOpath := os.Getenv("lastJobId")
 	processedWOpath := os.Getenv("processedWO")
 
@@ -538,7 +530,7 @@ func (r OperationStorage) GetLastJobIdValue3() (string, error) {
 	}
 	arrwoJSON, _ := json.Marshal(arrWO)
 
-	if err = json.Unmarshal([]byte(arrwoJSON), &arrWO); if err != nil {
+	if err = json.Unmarshal([]byte(arrwoJSON), &arrWO); err != nil {
 		r.logger.Errorf(err.Error())
 	}
 	crarr := arrWO

@@ -70,7 +70,8 @@ func main() {
 
 	//opmopites.MSSQLComposite(db)
 	SelectVersion()
-	test1 := sortworkorders.SortWO{
+
+	test1 := sortworkorders.OperationStorage{
 		DB: db,
 	}
 	rr, err := test1.TestQr()
