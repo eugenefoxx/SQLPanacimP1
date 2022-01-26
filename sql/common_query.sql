@@ -23,3 +23,27 @@ group by [PCB_NAME]
 
 -- PT_LOT_NAME в [PanaCIM].[dbo].[product_setup]
 -- это стороны PCB_NAME
+
+-- get NPM name for recipte
+SELECT TOP 1000 [PRODUCT_ID]
+      ,[PRODUCT_NAME]
+      ,[DOS_PRODUCT_NAME]
+      ,[PATTERNS_PER_PANEL]
+      ,[PANEL_WIDTH]
+      ,[PANEL_LENGTH]
+      ,[PANEL_THICKNESS]
+      ,[CAMERA_XAXIS_TOP]
+      ,[CAMERA_YAXIS_TOP]
+      ,[CAMERA_XAXIS_BOTTOM]
+      ,[CAMERA_YAXIS_BOTTOM]
+      ,[TOOLING_PIN_DISTANCE]
+      ,[BARCODES_PER_PANEL]
+      ,[PRODUCT_VALID_FLAG]
+      ,[TOOLING_PIN]
+      ,[CONVEYOR_SPEED]
+      ,[USE_BRD_FILE]
+      ,[BASE_PRODUCT_ID]
+      ,[PATTERN_COMBINATIONS_PER_PANEL]
+      ,[PATTERN_TYPES_PER_PANEL]
+  FROM [PanaCIM].[dbo].[product_data]
+  where [PRODUCT_ID] = '2501'

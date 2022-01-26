@@ -9,3 +9,4 @@ time="2021-12-05T23:48:31+03:00" level=fatal msg=0x5068c0 func="main.go:25" file
 time="2021-12-05T23:48:33+03:00" level=fatal msg=0x5068c0 func="main.go:25" file="main.init.0()"
 time="2021-12-05T23:48:35+03:00" level=fatal msg=0x5068c0 func="main.go:25" file="main.init.0()"
 time="2021-12-05T23:48:36+03:00" level=fatal msg=0x5068c0 func="main.go:25" file="main.init.0()"
+time="2022-01-26T00:58:17+03:00" level=fatal msg=0x720ce0 func="main.go:36" file="main.init.0()"

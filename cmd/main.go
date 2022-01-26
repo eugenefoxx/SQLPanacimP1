@@ -1,10 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 
+	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/eugenefoxx/SQLPanacimP1/internal/panacim"
+	"github.com/eugenefoxx/SQLPanacimP1/internal/sortworkorders"
 	"github.com/eugenefoxx/SQLPanacimP1/pkg/filereader"
 	"github.com/eugenefoxx/SQLPanacimP1/pkg/logging"
 	"github.com/eugenefoxx/SQLPanacimP1/pkg/removefiles"
@@ -13,12 +18,13 @@ import (
 
 const (
 	//value uint16 = 3000
-	value int = 19940
+	value int = 1040
 )
 
 var (
 	logger = logging.GetLogger()
 	//logger logging.Logger
+	db *sql.DB
 )
 
 func init() {
@@ -35,6 +41,64 @@ func init() {
 func main() {
 	//	logging.Init()
 	logger := logging.GetLogger()
+	var err error
+	//connString := "sqlserver://pana-ro:gfhjkm123@10.1.14.21/Panacim?database=PanaCIM&encrypt=disable"
+	connString := "sqlserver://cim:cim@10.1.14.21/Panacim?database=PanaCIM&encrypt=disable"
+	db, err = sql.Open("mssql", connString)
+	if err != nil {
+		log.Fatal("Error creating connerction pool: " + err.Error())
+	}
+	defer db.Close()
+	log.Printf("Connected!\n")
+	/*db, err := mssql.NewMSSQL()
+	if err != nil {
+		logger.Errorf(err.Error())
+		return
+	}
+	//defer db.Close()
+	log.Printf("Connected!\n")
+	err = db.Ping()
+	if err != nil {
+		panic("ping error: " + err.Error())
+	}*/
+	/*	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			logger.Errorf(err.Error())
+		}
+	}(db) */
+
+	//opmopites.MSSQLComposite(db)
+	SelectVersion()
+	test1 := sortworkorders.SortWO{
+		DB: db,
+	}
+	rr, err := test1.TestQr()
+	if err != nil {
+		logger.Errorf(err.Error())
+	}
+	fmt.Println(rr)
+
+	panacimStorage := panacim.PanaCIMStorage{
+		DB: db,
+	}
+	// получаем список из трех закрытых WO в моменте
+	doLastListWO, err := panacimStorage.GetLastListWO()
+	if err != nil {
+		logger.Errorf(err.Error())
+	}
+	fmt.Println("do ", doLastListWO)
+
+	// записываем результат doLastListWO в файл closedwo.csv
+	if err := panacimStorage.WriteListWOToFile(doLastListWO); err != nil {
+		logger.Errorf(err.Error())
+	}
+
+	/*test, err := sortworkorders.Sort.TestQr() //TestQr()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(test)*/
 	//	logger.Println("logger initialized")
 	/*
 		sortworkorders.Getclosedworkorders()
@@ -61,6 +125,7 @@ func main() {
 			logger.Infof(("res3 - %v"), res3)
 		}
 	*/
+
 	recipe := os.Getenv("recipe")
 	reportCsv := os.Getenv("report")
 	substituteCsv := os.Getenv("substitute")
@@ -164,6 +229,25 @@ func main() {
 			return
 		} */
 
+}
+
+func SelectVersion() {
+	//ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	//time.Sleep(1 * time.Second)
+	//context.Background()
+
+	//err := db.PingContext(ctx)
+	err := db.Ping()
+	if err != nil {
+		log.Fatal("Error pinging database: " + err.Error())
+	}
+	var result string
+	//err = db.QueryRowContext(ctx, "SELECT @@version").Scan(&result)
+	err = db.QueryRow("SELECT @@version").Scan(&result)
+	if err != nil {
+		log.Fatal("Scan failed: ", err.Error())
+	}
+	fmt.Printf("%s\n", result)
 }
 
 func summaryReportComponents(reportSumRead [][]string) {
